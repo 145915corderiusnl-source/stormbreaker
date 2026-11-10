@@ -1,95 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WasteWave – interactieve rondleiding</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stormbreaker – Obstakelspel</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial, sans-serif;background:#071522;color:#eef7ff}
-header{padding:20px 24px;background:#0d2638;border-bottom:1px solid #28516b}
-h1{margin:0 0 6px;font-size:26px;color:#67d7e8}
-header p{margin:0;color:#b9d2df}
-main{max-width:1100px;margin:auto;padding:22px;display:grid;grid-template-columns:1.25fr .85fr;gap:20px}
-.card{background:#102b3e;border:1px solid #2a526b;border-radius:14px;padding:18px}
-h2{margin:0 0 12px;font-size:19px}
-.ship{position:relative;min-height:430px;background:linear-gradient(#a8dbe8 0 43%,#176184 43% 100%);border-radius:12px;overflow:hidden;border:2px solid #4b8298}
-.sea{position:absolute;left:0;right:0;bottom:0;height:57%;background:repeating-linear-gradient(0deg,#176184,#176184 18px,#1b6d8d 19px,#1b6d8d 21px)}
-.boat{position:absolute;left:7%;right:7%;bottom:22%;height:42%;background:#e6edf0;clip-path:polygon(5% 0,95% 0,100% 75%,90% 100%,10% 100%,0 75%);border:3px solid #17394c}
-.deck{position:absolute;left:13%;right:13%;bottom:46%;height:17%;background:#f5f8f8;border:3px solid #17394c}
-.bridge{position:absolute;left:36%;width:28%;bottom:63%;height:17%;background:#d8e9ed;border:3px solid #17394c;border-radius:5px 5px 0 0}
-.window{height:40%;margin:10px 7px;background:#3d8199;border:2px solid #183c50}
-.stack{position:absolute;left:22%;bottom:63%;height:22%;width:9%;background:#e9a64d;border:3px solid #17394c}
-.stack:after{content:"";position:absolute;top:-12px;left:-4px;width:calc(100% + 8px);height:12px;background:#9c6031}
-.area{position:absolute;border:2px solid #07374a;background:#19a5b8;color:#042534;font-weight:bold;border-radius:8px;padding:8px 5px;cursor:pointer;text-align:center;box-shadow:0 3px 0 #07374a;min-width:85px}
-.area:hover,.area:focus{background:#ffe08a;outline:3px solid #fff}
-#btn-bridge{left:39%;top:15%}
-#btn-deck{left:8%;top:48%}
-#btn-sort{right:8%;top:49%}
-#btn-storage{left:12%;bottom:12%}
-#btn-reactor{right:12%;bottom:12%}
-#btn-engine{left:42%;bottom:5%}
-.hint{position:absolute;top:10px;left:12px;color:#163b4c;background:#ffffffc9;padding:7px 10px;border-radius:8px;font-size:13px}
-.panel h2{color:#67d7e8}
-.panel p{line-height:1.55;color:#d8e7ee}
-.panel .sub{color:#9fc2d1;font-size:13px}
-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-nav button{background:#1a526d;border:1px solid #3d829b;color:white;padding:9px 11px;border-radius:8px;cursor:pointer}
-nav button:hover,nav button.active{background:#67d7e8;color:#062333}
-footer{max-width:1100px;margin:0 auto;padding:0 22px 24px;color:#9fb9c8;font-size:13px}
-@media(max-width:760px){main{grid-template-columns:1fr;padding:12px}.ship{min-height:390px}.area{font-size:12px;min-width:72px;padding:7px 3px}}
+*{box-sizing:border-box}body{margin:0;background:#071827;color:#eef7ff;font:16px Arial,sans-serif}
+main{max-width:1000px;margin:auto;padding:18px}h1{margin:0 0 7px;font-size:25px}
+p{color:#bad3e5;margin:0 0 14px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button{background:#334155;color:white;border:1px solid #64748b;border-radius:8px;padding:10px 13px;cursor:pointer}
+button.active{background:#0369a1;border-color:#7dd3fc}button:hover{filter:brightness(1.15)}
+#status{background:#172b3d;border-radius:8px;padding:10px;margin:8px 0 12px;color:#a5f3fc}
+canvas{display:block;width:100%;height:auto;border:2px solid #3c6983;border-radius:12px;background:#0b4565;touch-action:manipulation}
+.help{font-size:13px;line-height:1.5;color:#a9c5d8;margin-top:10px}
 </style>
 </head>
 <body>
-<header><h1>🌊 WasteWave</h1><p>Interactieve rondleiding — klik op een onderdeel van het schip.</p></header>
 <main>
-<section class="card">
-<h2>Verken het schip</h2>
-<div class="ship" aria-label="Schematische afbeelding van het WasteWave-schip">
- <div class="sea"></div><div class="boat"></div><div class="deck"></div>
- <div class="bridge"><div class="window"></div></div><div class="stack"></div>
- <div class="hint">Klik op een knop om meer te ontdekken</div>
- <button class="area" id="btn-bridge" data-place="bridge">Brug</button>
- <button class="area" id="btn-deck" data-place="deck">Werkdek</button>
- <button class="area" id="btn-sort" data-place="sort">Sorteerhal</button>
- <button class="area" id="btn-storage" data-place="storage">Afvalopslag</button>
- <button class="area" id="btn-reactor" data-place="reactor">Kernreactor</button>
- <button class="area" id="btn-engine" data-place="engine">Machinekamer</button>
+<h1>🚢 Stormbreaker – Obstakelspel</h1>
+<p>Plaats obstakels op zee. Stormbreaker zoekt automatisch een route naar de haven, ook terwijl hij vaart.</p>
+<div class="toolbar">
+<button data-tool="rock" class="active">🪨 Rots</button>
+<button data-tool="buoy">🟠 Boei</button>
+<button data-tool="ship">🚢 Schip</button>
+<button data-tool="erase">🧽 Wissen</button>
+<button id="reset">↻ Opnieuw</button>
 </div>
-<nav aria-label="Kies een ruimte">
- <button data-place="bridge">Brug</button><button data-place="deck">Werkdek</button>
- <button data-place="sort">Sorteerhal</button><button data-place="storage">Afvalopslag</button>
- <button data-place="reactor">Kernreactor</button><button data-place="engine">Machinekamer</button>
-</nav>
-</section>
-<aside class="card panel" aria-live="polite">
- <p class="sub" id="counter">ONDERDEEL 1 VAN 6</p>
- <h2 id="title">De brug</h2>
- <p id="description">Vanaf de brug bestuurt de bemanning het schip. Ze houden de route, de zee en de verzamellocaties in de gaten.</p>
- <p id="detail">De navigatieapparatuur helpt om veilig tussen drijvend afval te varen.</p>
- <p class="sub">Gebruik de knoppen op het schip of onder de afbeelding om verder te kijken.</p>
-</aside>
+<div id="status" aria-live="polite">Kies een obstakel en klik op het water!</div>
+<canvas id="game" width="720" height="432"></canvas>
+<div class="help"><strong>Spelen:</strong> kies een obstakel en klik op het water om het neer te zetten. Je kunt dit ook doen terwijl Stormbreaker vaart. De boot berekent dan direct een nieuwe route. Met Wissen verwijder je obstakels. Klik op Opnieuw voor een leeg speelveld.</div>
 </main>
-<footer>Conceptueel ontwerp van WasteWave. Het verzamelde afval wordt gesorteerd en opgeslagen; het wordt niet verbrand of als brandstof gebruikt. De kernreactor levert energie voor de elektrische aandrijving.</footer>
 <script>
-const places={
- bridge:{title:"De brug",desc:"Vanaf de brug bestuurt de bemanning het schip. Ze houden de route, de zee en de verzamellocaties in de gaten.",detail:"De navigatieapparatuur helpt om veilig tussen drijvend afval te varen."},
- deck:{title:"Het werkdek",desc:"Op het werkdek wordt drijvend afval uit het water gehaald.",detail:"Kranen en opvangsystemen brengen het afval aan boord. De bemanning werkt hier met beschermende kleding en veiligheidsmateriaal."},
- sort:{title:"De sorteerhal",desc:"In de sorteerhal wordt het verzamelde afval uit elkaar gehaald en gesorteerd.",detail:"Plastic, metaal en ander materiaal worden apart gehouden. Zo kan het later op de juiste manier worden verwerkt of gerecycled."},
- storage:{title:"De afvalopslag",desc:"Na het sorteren wordt het afval tijdelijk veilig opgeslagen.",detail:"Afgesloten opslagvakken voorkomen dat het afval terug in zee komt. Het afval wordt hier niet verbrand."},
- reactor:{title:"De kernreactor",desc:"De kernreactor levert de energie voor het schip.",detail:"De warmte wordt gebruikt om stoom te maken. Die drijft een turbine en generator aan. De elektriciteit voedt de elektrische systemen en aandrijving."},
- engine:{title:"De machinekamer",desc:"In de machinekamer zitten de elektromotoren en belangrijke technische systemen.",detail:"De elektromotoren zetten elektrische energie om in beweging en laten de schroeven draaien. De aandrijving gebruikt dus elektriciteit, niet het verzamelde afval."}
-};
-const order=Object.keys(places);
-function show(key){
- const i=order.indexOf(key),p=places[key]; if(!p)return;
- document.getElementById("counter").textContent=`ONDERDEEL ${i+1} VAN ${order.length}`;
- document.getElementById("title").textContent=p.title;
- document.getElementById("description").textContent=p.desc;
- document.getElementById("detail").textContent=p.detail;
- document.querySelectorAll("[data-place]").forEach(b=>b.classList.toggle("active",b.dataset.place===key));
+(()=>{
+const c=document.getElementById('game'),ctx=c.getContext('2d'),status=document.getElementById('status');
+const cols=24,rows=14,cell=30,start={x:2,y:7},goal={x:21,y:7};
+let obstacles=[],tool='rock',path=[],moving=false,boat={x:2.5,y:7.5},last=0;
+const key=(x,y)=>y*cols+x;
+function blocked(x,y){return x<0||y<0||x>=cols||y>=rows||obstacles.some(o=>o.x===x&&o.y===y)}
+function findRoute(sx=Math.floor(boat.x),sy=Math.floor(boat.y)){
+ const q=[{x:sx,y:sy}],came=new Map([[key(sx,sy),-1]]),dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+ for(let i=0;i<q.length;i++){
+  const p=q[i];if(p.x===goal.x&&p.y===goal.y)break;
+  for(const [dx,dy] of dirs){const x=p.x+dx,y=p.y+dy,k=key(x,y);
+   if(blocked(x,y)||came.has(k))continue;
+   if(dx&&dy&&(blocked(p.x+dx,p.y)||blocked(p.x,p.y+dy)))continue;
+   came.set(k,key(p.x,p.y));q.push({x,y});
+  }
+ }
+ let k=key(goal.x,goal.y);if(!came.has(k))return [];
+ const out=[];while(k!==-1){out.push({x:k%cols,y:Math.floor(k/cols)});k=came.get(k)}
+ return out.reverse();
 }
-document.querySelectorAll("[data-place]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.place)));
+function begin(){
+ obstacles=[];boat={x:start.x+.5,y:start.y+.5};path=findRoute(start.x,start.y);
+ moving=path.length>1;status.textContent=moving?'Stormbreaker vaart naar de haven…':'Geen route beschikbaar.';
+}
+function draw(){
+ const g=ctx.createLinearGradient(0,0,0,c.height);g.addColorStop(0,'#14749a');g.addColorStop(1,'#06334e');ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);
+ for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){ctx.strokeStyle='rgba(200,240,255,.10)';ctx.strokeRect(x*cell,y*cell,cell,cell)}
+ for(let i=0;i<18;i++){const x=(i*127+31)%720,y=(i*79+19)%432;ctx.strokeStyle='rgba(190,235,255,.17)';ctx.beginPath();ctx.arc(x,y,9,0,Math.PI);ctx.stroke()}
+ if(path.length>1){ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo((p.x+.5)*cell,(p.y+.5)*cell):ctx.moveTo((p.x+.5)*cell,(p.y+.5)*cell));ctx.strokeStyle='#a5f3fc';ctx.lineWidth=3;ctx.setLineDash([7,6]);ctx.stroke();ctx.setLineDash([])}
+ ctx.fillStyle='#22c55e';ctx.beginPath();ctx.arc((goal.x+.5)*cell,(goal.y+.5)*cell,15,0,Math.PI*2);ctx.fill();ctx.font='20px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#052e16';ctx.fillText('⚓',(goal.x+.5)*cell,(goal.y+.5)*cell);
+ obstacles.forEach(o=>{ctx.font='23px Arial';ctx.fillStyle='white';ctx.fillText(o.type==='rock'?'🪨':o.type==='buoy'?'🟠':'🚢',(o.x+.5)*cell,(o.y+.5)*cell)});
+ ctx.save();ctx.translate(boat.x*cell,boat.y*cell);
+ if(path.length>1)ctx.rotate(Math.atan2(path[1].y+.5-boat.y,path[1].x+.5-boat.x));
+ ctx.fillStyle='#071f35';ctx.beginPath();ctx.moveTo(20,0);ctx.lineTo(9,-10);ctx.lineTo(-14,-8);ctx.lineTo(-18,0);ctx.lineTo(-14,8);ctx.lineTo(9,10);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#f8fafc';ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(7,-7);ctx.lineTo(-12,-6);ctx.lineTo(-16,0);ctx.lineTo(-12,6);ctx.lineTo(7,7);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#0284c7';ctx.fillRect(-5,-5,9,10);ctx.restore();
+}
+function frame(t){
+ const dt=Math.min(.04,(t-last)/1000||0);last=t;
+ if(moving&&path.length>1){
+  const target=path[1],dx=target.x+.5-boat.x,dy=target.y+.5-boat.y,d=Math.hypot(dx,dy),step=1.45*dt;
+  if(d<=step){boat.x=target.x+.5;boat.y=target.y+.5;path.shift();if(path.length<=1){moving=false;status.textContent='Haven bereikt! 🎉'}}
+  else{boat.x+=dx/d*step;boat.y+=dy/d*step}
+ }
+ draw();requestAnimationFrame(frame);
+}
+c.addEventListener('click',e=>{
+ const r=c.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*cols),y=Math.floor((e.clientY-r.top)/r.height*rows);
+ if((x===goal.x&&y===goal.y)||(x===Math.floor(boat.x)&&y===Math.floor(boat.y)))return;
+ if(tool==='erase')obstacles=obstacles.filter(o=>o.x!==x||o.y!==y);
+ else if(!obstacles.some(o=>o.x===x&&o.y===y))obstacles.push({x,y,type:tool});
+ if(moving){
+  const next=findRoute();
+  if(next.length>1){path=next;status.textContent='Route aangepast! Stormbreaker wijkt uit.'}
+  else{moving=false;path=[];status.textContent='Geen route meer! Verwijder een obstakel.'}
+ }
+ draw();
+});
+document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{
+ tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x===b));
+ status.textContent=tool==='erase'?'Klik op een obstakel om het te verwijderen.':'Klik op het water om een obstakel te plaatsen.';
+}));
+document.getElementById('reset').addEventListener('click',begin);
+begin();requestAnimationFrame(frame);
+})();
 </script>
 </body>
 </html>
